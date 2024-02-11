@@ -1,0 +1,12 @@
+<section class="main">
+    <app-header (onToggle) = "onToggle($event)"></app-header>
+    <section class="wrapper h-100" id="wrapper">
+        <div class="sidebar-wrapper" id="sidebar-wrapper">
+            <app-sidebar></app-sidebar>
+        </div>
+        <div class="page-content-wrapper h-100" id="page-content-wrapper">
+            <router-outlet></router-outlet>
+        </div>
+    </section>
+    <app-footer></app-footer>
+</section>

@@ -1,0 +1,13 @@
+<div class="container-fluid h-100">
+    <div class="row h-100">
+        @for (cardData of data; track cardData.name){
+        <div class="col-12 col-md-6 mb-3">
+            <div class="card chat-box">
+                <div class="card-body">
+                    {{cardData.name}}
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
