@@ -1,0 +1,25 @@
+@if(menuLinks){
+<ul class="menu-list sidebar-nav">
+    @for(menu of menuLinks;track menu.id){
+    <li class="menu-item" >
+
+        @if(menu.url){
+        <a [routerLink]="menu.url" routerLinkActive="active">
+            <i [class]="menu.icon_url"></i>
+            {{menu.name}}
+        </a>
+        }
+        @else if(menu.childern){
+        <a (click)="menu.isCollapsible = !menu.isCollapsible" [attr.aria-expanded]="!menu.isCollapsible"
+            aria-controls="collapseExample">
+            <i [class]="menu.icon_url"></i>
+            {{menu.name}}
+        </a>
+        <div #collapse="ngbCollapse" class="ms-3" [(ngbCollapse)]="menu.isCollapsible">
+            <app-menu-link [menuLinks]="menu.childern"></app-menu-link>
+        </div>
+        }
+    </li>
+    }
+</ul>
+}

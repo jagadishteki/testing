@@ -1,6 +1,5 @@
  .main {
      background-color: #edf2f9;
-     height: 100%;
  }
 
  .nav-pills>li>a {
@@ -33,6 +32,7 @@
      -moz-transition: all 0.5s ease;
      -o-transition: all 0.5s ease;
      transition: all 0.5s ease;
+     background-color: #edf2f9;
  }
 
  #wrapper.toggled #sidebar-wrapper {
@@ -62,7 +62,7 @@
  /* Sidebar Styles */
 
  .sidebar-nav {
-     position: absolute;
+     position: relative;
      top: 0;
      width: 250px;
      margin: 0;
@@ -84,8 +84,8 @@
 
  .sidebar-nav li a:hover {
      text-decoration: none;
-     color: #fff;
-     background: rgba(255, 255, 255, 0.2);
+     color: #000;
+     background: rgba(255, 255, 255, 0.8);
      border-left: red 2px solid;
  }
 
