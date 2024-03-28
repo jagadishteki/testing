@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -8,7 +8,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit{
 
   @Output() onToggle = new EventEmitter();
 
@@ -21,9 +21,4 @@ export class HeaderComponent implements OnInit, OnDestroy {
   toggle(){
     this.onToggle.emit();
   }
-
-  ngOnDestroy(): void {
-
-  }
-
 }

@@ -1,0 +1,37 @@
+table{
+    font-size: 13px;
+}
+.alert{
+    padding-top:5px;
+    padding-bottom:5px;
+}
+
+.export-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.thead{
+    background-color: greenyellow;
+    th{
+        border-bottom: 1px solid black;
+        padding: 5px;
+    }
+    td{
+        border-bottom: 1px solid black;
+        padding: 5px;
+    }
+}
+
+.tbody td{
+    border-bottom: 1px solid black;
+    padding: 5px;
+}
+
+.modal-backdrop {
+    background-color: rgba(0,0,0,.50) !important;
+}
+
+.fs-20{
+    font-size:20px;
+    margin-left: 10px;
+}

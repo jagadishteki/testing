@@ -1,5 +1,5 @@
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from '../../shared/header/header.component';
 import { SidebarComponent } from '../../shared/sidebar/sidebar.component';
@@ -12,7 +12,7 @@ import { FooterComponent } from '../../shared/footer/footer.component';
   templateUrl: './crm.component.html',
   styleUrl: './crm.component.scss'
 })
-export class CrmComponent implements OnInit, OnDestroy, AfterViewInit {
+export class CrmComponent implements OnInit, AfterViewInit {
 
 
   toggle: boolean = true;
@@ -45,8 +45,5 @@ export class CrmComponent implements OnInit, OnDestroy, AfterViewInit {
       }
     }
   }
-  ngOnDestroy(): void {
-
-  }
-
+  
 }

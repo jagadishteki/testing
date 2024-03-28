@@ -1,0 +1,262 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-4">
+            <h3>Manage Contact Groups</h3>
+        </div>
+        <div class="col-md-3">
+            <button type="button" class="btn btn-success btn-sm ms-1" (click)="addGroup()">
+                <i class="bi bi-file-earmark-plus me-2"></i>Add Group
+            </button>
+        </div>
+        <div class="col-md-5 text-end"><pagination-controls (pageChange)="p = $event"></pagination-controls></div>
+    </div>
+    <div class="search-result mt-1">
+        <table class="table table-striped table-bordered ">
+            <thead>
+                <tr class="table-success">
+                    <th *ngFor="let header of headers">{{ header.header}}
+                        <a (click)="sortAsc(header.field)"><i *ngIf="header.sortIcon"
+                                class="bi bi-sort-down-alt"></i></a>
+                        <a (click)="sortDsc(header.field)"><i *ngIf="!header.sortIcon" class="bi bi-sort-up"></i></a>
+                    </th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td width="20%"><input type="text" class="form-control form-control-sm"
+                            (input)="inputSearch($event, 'name')"></td>
+                    <td width="30%"><input type="text" class="form-control form-control-sm"
+                            (input)="inputSearch($event, 'description')"></td>
+                    <!-- <td width="15%"><input type="text" class="form-control form-control-sm"
+                            (input)="inputSearch($event, 'status')"></td> -->
+
+                    <td width="15%">
+                        <select class="form-select form-select-sm" (change)="inputSearch($event, 'status')">
+                            <option value="">Active / Deactive</option>
+                            <option value="1">Active</option>
+                            <option value="0">Deactive</option>
+                        </select>
+                    </td>
+                    <td width="15%"><input type="text" class="form-control form-control-sm"
+                            (input)="inputSearch($event, 'created')"></td>
+                    <td></td>
+                </tr>
+                <tr *ngFor="let group of filteredGroups | paginate: { itemsPerPage: 2, currentPage: p}">
+                    <td>{{ group.name }}</td>
+                    <td>{{ group.description }}</td>
+                    <td>{{ (group.status==1)?"Active":"Deactive" }}</td>
+                    <td>{{ group.created }}</td>
+                    <td><i (click)="editGroup(group)" class="bi bi-pencil-square fs-20"></i>
+                        <i *ngIf="group.status=='1'" (click)="groupStatus(group.id, 0)"
+                            class="bi bi-check-square-fill fs-20"></i>
+                        <i *ngIf="group.status=='0'" (click)="groupStatus(group.id, 1)"
+                            class="bi bi-x-square-fill fs-20"></i>
+                        <i (click)="assign(group)" class="bi bi-person-fill-add fs-20"></i>
+                        <i (click)="groupUsersFun(group)" class="bi bi-people-fill fs-20"></i>
+                        <i (click)="deleteGroup(group.id)" class="bi bi-trash fs-20"></i>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table class="table export-table" #tableGroup *ngIf="exportTable">
+            <tr class="thead">
+                <th *ngFor="let header of headers">{{ header.header}}</th>
+            </tr>
+            <tr class="tbody" *ngFor="let group of filteredGroups">
+                <td>{{ group.name }}</td>
+                <td>{{ group.description }}</td>
+                <td>{{ group.status }}</td>
+                <td>{{ group.created }}</td>
+                <td></td>
+            </tr>
+        </table>
+
+        <div class="float-end">
+            <pagination-controls (pageChange)="p = $event"></pagination-controls>
+        </div>
+        <!-- <button class="btn btn-success btn-sm float-start" (click)="getExcelFile()">Get Excel File</button> -->
+        <!-- Example split danger button -->
+        <!-- Example single danger button -->
+        <div class="btn-group">
+            <button type="button" class="btn btn-danger btn-sm dropdown-toggle px-3" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Export
+            </button>
+            <ul class="dropdown-menu">
+                <li><button class="dropdown-item" (click)="getExcelFile()">Excel</button></li>
+                <li><button class="dropdown-item" (click)="getPdfFile()">PDF</button></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Start Add Group Modal -->
+<div class="modal modal-backdrop" tabindex="-1" id="group">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div *ngIf="message" [ngClass]="messageType=='success'?'alert alert-success':'alert alert-danger'">
+                {{message}}</div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="form-title"></h5>
+                <button type="button" class="btn-close" (click)="modalClose('group')"></button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" [formGroup]="contactGroup">
+                    <div class="mb-3">
+                        <label for="name">Name <sup>*</sup></label>
+                        <input type="text" class="form-control" placeholder="Enter Group Name" formControlName="name" />
+                        <div *ngIf="contactGroup.controls['name']?.invalid && (contactGroup.controls['name']?.dirty || contactGroup.controls['name']?.touched)"
+                            class="alert alert-danger">
+                            <div *ngIf="contactGroup.controls['name']?.['errors']?.['required']">
+                                Name is required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description <sup>*</sup></label>
+                        <textarea id="description" class="form-control" formControlName="description"
+                            placeholder="Enter Description" rows="4"></textarea>
+                        <div *ngIf="contactGroup.controls['description']?.invalid && (contactGroup.controls['description']?.dirty || contactGroup.controls['description']?.touched)"
+                            class="alert alert-danger">
+                            <div *ngIf="contactGroup.controls['description']?.['errors']?.['required']">
+                                Description is required.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <button *ngIf="formType=='add'" (click)="onSubmit(contactGroup.value)"
+                            class="btn btn-success px-5">Add</button>
+                        <button *ngIf="formType=='edit'" (click)="updateGroup()"
+                            class="btn btn-success px-5">Update</button>
+                        <button type="button" class="btn btn-danger px-5 ms-3" (click)="groupForm()">Reset</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Add Group -->
+
+<!-- Start Add Contacts to Group Modal -->
+<div class="modal modal-backdrop overflow-scroll" tabindex="-1" id="assign">
+    <div class="modal-dialog group">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Contacts to {{ group?.name }}</h5>
+                <button type="button" class="btn-close" (click)="modalClose('assign')"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <!-- <select [(ngModel)]="specialityId" class="form-select form-select-sm">
+                            <option value="0">Select Speciality</option>
+                            <option *ngFor="let speciality of specialities" [value]="speciality.specalityId">
+                                {{speciality.specalityName}}</option>
+                        </select> -->
+                        <ng-multiselect-dropdown 
+                        [settings]="dropdownSettings"
+                        [data]="dropdownList" 
+                        [(ngModel)]="selectedItems" 
+                        (onSelect)="onItemSelect($event)"
+                        (onSelectAll)="onSelectAll($event)">
+                        </ng-multiselect-dropdown>
+                    </div>
+                    <div class="col-md-2">
+                        <select [(ngModel)]="assigned" class="form-select">
+                            <option value="">All</option>
+                            <option value="0">Not Assianed</option>
+                            <option value="1">Assigned</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2"><button type="button" (click)="searchContacts()"
+                            class="btn btn-success w-100">Search Contacts</button>
+                    </div>
+                </div>
+                <form class="form-horizontal mt-3" [formGroup]="assignFormGroup" (ngSubmit)="assignSubmit()">
+                    <div class="contacts">
+                        <table class="table table-striped table-bordered ">
+                            <thead>
+                                <tr class="table-success">
+                                    <th><input type="checkbox" [checked]="assignCheck" class="form-check"
+                                            (change)="selectToggle($event)"></th>
+                                    <th>Group Name</th>
+                                    <th>Name</th>
+                                    <th>Phone</th>
+                                    <th>E-mail</th>
+                                    <th>Speciality</th>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of filteredUsers">
+                                    <td><input type="checkbox" class="form-check" [checked]="assignCheck"
+                                            [value]="user.id" (change)="addContact($event)"></td>
+                                    <td>{{ user.groupName }}</td>
+                                    <td>{{ user.name }}</td>
+                                    <td>{{ user.phone }}</td>
+                                    <td>{{ user.email }}</td>
+                                    <td>{{ user.speciality }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <button type="submit" class="btn btn-success w-100">ASSIGN TO GROUP</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Add Contacts to Group Modal -->
+
+<!-- Start Group Users Modal -->
+<div class="modal modal-backdrop" tabindex="-1" id="groupUsers">
+    <div class="modal-dialog group">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ group?.name }} Users</h5>
+                <button type="button" class="btn-close" (click)="modalClose('groupUsers')"></button>
+            </div>
+            <div class="modal-body">
+                <div class="contacts">
+                    <table class="table table-striped table-bordered ">
+                        <thead>
+                            <tr class="table-success">
+                                <th class="bg-success text-light" *ngFor="let header of userHeaders">{{ header.header}}
+                                    <a (click)="sortUserAsc(header.field)"><i *ngIf="header.sortIcon"
+                                            class="bi bi-sort-down-alt"></i></a>
+                                    <a (click)="sortUserDsc(header.field)"><i *ngIf="!header.sortIcon"
+                                            class="bi bi-sort-up"></i></a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td width="25%"><input type="text" class="form-control form-control-sm"
+                                        (input)="inputUserSearch($event, 'name')"></td>
+                                <td width="15%"><input type="text" class="form-control form-control-sm"
+                                        (input)="inputUserSearch($event, 'phone')"></td>
+                                <td width="25%"><input type="text" class="form-control form-control-sm"
+                                        (input)="inputUserSearch($event, 'email')"></td>
+                                <td width="30%"><input type="text" class="form-control form-control-sm"
+                                        (input)="inputUserSearch($event, 'speciality')"></td>
+                            </tr>
+                            <tr *ngFor="let user of filteredGroupUsers">
+                                <td>{{ user.name }}</td>
+                                <td>{{ user.phone }}</td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.speciality }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End Add Contacts to Group Modal -->

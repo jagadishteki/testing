@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import {URLs} from '../../../config/urls';
@@ -11,7 +11,7 @@ import {URLs} from '../../../config/urls';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit{
 
   loginForm: FormGroup;
 
@@ -43,9 +43,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       return;
     }
     this.router.navigateByUrl(URLs.DASHBOARD_URL);
-  }
-  ngOnDestroy(): void {
-    
   }
 
 }

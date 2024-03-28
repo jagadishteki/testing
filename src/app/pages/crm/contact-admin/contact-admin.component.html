@@ -1,0 +1,83 @@
+<div class="row">
+    <div class="col-md-8">
+        <h3 class="my-3">Send Mail</h3>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div *ngIf="message" [ngClass]="messageType=='success'?'alert alert-success':'alert alert-danger'">
+                    {{message}}</div>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="form-title"></h5>
+                </div>
+                <div class="modal-body">
+                    <form class="form-horizontal" [formGroup]="mailForm" (ngSubmit)="sendMail()">
+                        <div class="mb-3">
+                            <label for="name">Name <sup>*</sup></label>
+                            <input type="text" class="form-control" placeholder="Enter your Name"
+                                formControlName="name" />
+                            <div *ngIf="mailForm.controls['name']?.invalid && (mailForm.controls['name']?.dirty || mailForm.controls['name']?.touched)"
+                                class="alert alert-danger">
+                                <div *ngIf="mailForm.controls['name']?.['errors']?.['required']">
+                                    Name is required.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email">Email <sup>*</sup></label>
+                            <input type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control"
+                                placeholder="Enter your Email" formControlName="email" #email />
+                            <div *ngIf="mailForm.controls['email']?.invalid && (mailForm.controls['email']?.dirty || mailForm.controls['email']?.touched)"
+                                class="alert alert-danger">
+                                <div *ngIf="mailForm.controls['email']?.['errors']?.['required']">
+                                    Email is required.
+                                </div>
+                                <div *ngIf="mailForm.controls['email']?.['errors']?.['pattern']">
+                                    Invalid Email.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="subject">Subject <sup>*</sup></label>
+                            <input type="text" class="form-control" placeholder="Enter Subject"
+                                formControlName="subject" />
+                            <div *ngIf="mailForm.controls['subject']?.invalid && (mailForm.controls['subject']?.dirty || mailForm.controls['subject']?.touched)"
+                                class="alert alert-danger">
+                                <div *ngIf="mailForm.controls['subject']?.['errors']?.['required']">
+                                    Subject is required.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- <div class="mb-3">
+                            <label for="message" class="form-label">Message <sup>*</sup></label>
+                            <textarea id="message" class="form-control" formControlName="message"
+                                placeholder="Enter Message" rows="4"></textarea>
+                            <div *ngIf="mailForm.controls['message']?.invalid && (mailForm.controls['message']?.dirty || mailForm.controls['message']?.touched)"
+                                class="alert alert-danger">
+                                <div *ngIf="mailForm.controls['message']?.['errors']?.['required']">
+                                    Message is required.
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <div class="mb-3">
+                            <angular-editor id="editor1" formControlName="message" [config]="config"></angular-editor>
+                            <div *ngIf="mailForm.controls['message']?.invalid && (mailForm.controls['message']?.dirty || mailForm.controls['message']?.touched)"
+                            class="alert alert-danger">
+                            <div *ngIf="mailForm.controls['message']?.['errors']?.['required']">
+                                Message is required.
+                            </div>
+                        </div>
+
+                        </div>
+
+                        <div class="mb-3">
+                            <button type="submit" class="btn btn-success px-5">Submit</button>
+                            <button type="button" class="btn btn-danger px-5 ms-3"
+                                (click)="createMailForm()">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
